@@ -11,7 +11,7 @@ function App() {
 
 	useEffect(
 		() => {
-			socketRef.current = io.connect("http://localhost:7000")
+			socketRef.current = io.connect("http://localhost:4000")
 			socketRef.current.on("message", ({ name, message }) => {
 				setChat([ ...chat, { name, message } ])
 			})
@@ -42,15 +42,11 @@ function App() {
 	}
 
 	return (
-		<>
-		<div>
-           <h1 className="header" >Welcome here .....!!!</h1>
-		</div>
 		<div className="card">
 			<form onSubmit={onMessageSubmit}>
 				<h1>Messenger</h1>
 				<div className="name-field">
-					<TextField required name="name" onChange={(e) => onTextChange(e)} value={state.name} label="Name" />
+					<TextField name="name" onChange={(e) => onTextChange(e)} value={state.name} label="Name" />
 				</div>
 				<div>
 					<TextField
@@ -60,17 +56,15 @@ function App() {
 						id="outlined-multiline-static"
 						variant="outlined"
 						label="Message"
-						required
 					/>
 				</div>
 				<button>Send Message</button>
 			</form>
 			<div className="render-chat">
-				<h1>Chat Side</h1>
+				<h1>Chat Log</h1>
 				{renderChat()}
 			</div>
 		</div>
-		</>
 	)
 }
 

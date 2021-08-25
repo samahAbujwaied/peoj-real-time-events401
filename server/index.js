@@ -8,6 +8,6 @@ io.on('connection', socket => {
   })
 })
 
-http.listen(7000, function() {
-  console.log('listening on port 7000')
+http.listen(4000, function() {
+  console.log('listening on port 4000')
 })
