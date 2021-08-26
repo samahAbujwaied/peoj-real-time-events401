@@ -9,17 +9,17 @@ const socket = client.connect(host);
 // console.log(process.argv)
 const value = process.argv.splice(2)[0];
 console.log("value : ", value);
-socket.emit('get_all-client');
-socket.emit('client_msg', value);
+socket.emit('get_all-client');//done
+socket.emit('client_msg', value);//done
 
 
 // socket.emit('client_msg', "wash the dishes");
 
 
-socket.on('added', payload=> {
-    console.log("Thank you for adding : ", payload , " to the queue");
-    // socket.disconnect();
-});
+// socket.on('added', payload=> {
+//     console.log("Thank you for adding : ", payload , " to the queue");
+//     // socket.disconnect();
+// });
 
 
 socket.on('admin-data', msg=> {
