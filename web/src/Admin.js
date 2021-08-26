@@ -4,17 +4,20 @@ import io from "socket.io-client"
 import "./App.css"
 
 function Admin() {
-	const [ state, setState ] = useState({ message: "", name: "" })
+	const [ state, setState ] = useState({ message: "", name: "" ,id:"" })
 	const [ chat, setChat ] = useState([])
 
 	const socketRef = useRef()
 
 	useEffect(
 		() => {
-			socketRef.current = io.connect("http://localhost:8080")
-			socketRef.current.emit('get_all')
-			socketRef.current.on("res-client", ({ name, message }) => {
-				setChat([ ...chat, { name, message } ])
+			socketRef.current = io.connect("http://localhost:4456/discord")
+		
+			// socketRef.current.emit('admin_msg', value);
+			socketRef.current.on("res-client", ({ name, message,id }) => {
+				setChat([ ...chat, { name, message,id } ])
+				socketRef.current.emit('get_all')
+				// socketRef.current.emit('received-admin', id)
 			})
 			return () => socketRef.current.disconnect()
 		},
@@ -30,14 +33,37 @@ function Admin() {
 		socketRef.current.emit("admin_msg", { name, message })
 		e.preventDefault()
 		setState({ message: "", name })
+		
 	}
+    const acceptbtn=(e)=>{
+		
+	 socketRef.current.emit("accept_msg", ({accept:'accept',gotmsg:chat[1].message}))
+	 console.log('asmklasmklnsdnjksnljn',chat[0].message);
+  
+		console.log('accept');
+		e.preventDefault()
+	}
+	const ignorebtn=(e)=>{
 
+		socketRef.current.emit("ignore_msg", ({ignore:'ignore',gotmsg:chat[1].message}))
+	    console.log('a++++++++++++++++',chat[0].message);
+    
+		console.log('ignore');
+		e.preventDefault()
+	
+	}
+	
 	const renderChat = () => {
 		return chat.map(({ name, message }, index) => (
 			<div key={index}>
 				<h3>
 					{name}: <span>{message}</span>
 				</h3>
+				<button value="accept" onClick={acceptbtn} >accept
+				
+				</button>
+
+				<button value="ignore" onClick={ignorebtn}  >ignore</button>
 			</div>
 		))
 	}
