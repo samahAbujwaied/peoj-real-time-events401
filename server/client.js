@@ -17,18 +17,18 @@ socket.emit('client_msg', value);
 
 
 socket.on('added', payload=> {
-    socket.on('res-client', item =>{
-        console.log(item);
-    });
-
     console.log("Thank you for adding : ", payload , " to the queue");
     // socket.disconnect();
 });
 
 
+socket.on('admin-data', msg=> {
+    console.log("client got this msg from admin: ", msg)
+    socket.emit('received-admin', msg)
+})
 
 socket.on('res-send', msg=> {
-    console.log("client got this msg: ", msg)
+    console.log("admin got this msg: ", msg)
     socket.emit('received-client', msg)
 
 })
