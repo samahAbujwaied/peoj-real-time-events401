@@ -1,7 +1,7 @@
 'use strict';
 
 const client = require('socket.io-client');
-const host = "http://localhost:4000/discord";
+const host = "http://localhost:8000";
 
 const socket = client.connect(host);
 

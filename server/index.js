@@ -16,7 +16,7 @@ const app = require('express')()
 const http = require('http').createServer(app)
 const uuid = require('uuid').v4
 // keep port in dotenv
-const io = require('socket.io')(4000);
+const io = require('socket.io')(8080);
 // can be stored in a database/ cache/ ...
 // my queue is an object
 // keyed queue
@@ -29,8 +29,8 @@ const msgQueueAdmin = {
     data : {}
 }
 
-const discord = io.of('/discord'); //namespace
-discord.on('connection', socket=> {
+// const discord = io.of('/discord'); //namespace
+io.on('connection', socket=> {
     console.log("CONNECTED", socket.id)
     // when the parent adds a new chore
     socket.on('client_msg', ({ name, message })=> {
@@ -39,7 +39,7 @@ discord.on('connection', socket=> {
         console.log("id ====> ", id)
         msgQueueClient.data[id] = { name, message };
         // socket.emit('added', payload); // telling the clinet a task was added      
-        discord.emit('res-client', {name: msgQueueClient.data[id].name,message: msgQueueClient.data[id].message });/// lal admin===
+        io.emit('res-client', {name: msgQueueClient.data[id].name,message: msgQueueClient.data[id].message });/// lal admin===
         // console.log("after add msgQueueClient ========> ", msgQueueClient);
     });
 
@@ -48,7 +48,7 @@ discord.on('connection', socket=> {
       const id = uuid();
       console.log("id ====> ", id)
       msgQueueAdmin.data[id] = { name, message };
-      discord.emit('admin-data', { name: msgQueueAdmin.data[id].name,message: msgQueueAdmin.data[id].message });
+      io.emit('admin-data', { name: msgQueueAdmin.data[id].name,message: msgQueueAdmin.data[id].message });
     //   console.log("after add msgQueueAdmin ========> ", msgQueueAdmin);
     console.log(msgQueueAdmin.data[id].name,msgQueueAdmin.data[id].message);
   });
@@ -83,6 +83,10 @@ discord.on('connection', socket=> {
   })
 });
 
-http.listen(4000, function() {
+http.listen(8080, function() {
     console.log('listening on port 4000')
+  })
+
+  app.get('/',(req,res)=>{
+    res.send('hellloo')
   })

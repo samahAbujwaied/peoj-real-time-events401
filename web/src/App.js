@@ -11,7 +11,7 @@ function App() {
 
 	useEffect(
 		() => {
-			socketRef.current = io.connect("http://localhost:4000/discord")
+			socketRef.current = io.connect("http://localhost:8080")
 			socketRef.current.emit('get_all-client');
 			socketRef.current.on("admin-data", ({ name, message }) => {
 				setChat([ ...chat, { name, message } ])
