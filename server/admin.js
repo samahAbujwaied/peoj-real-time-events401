@@ -9,12 +9,13 @@ const socket = client.connect(host);
 socket.emit('get_all');
 
 
-socket.on('chore', msg=> {
-    console.log("admin got this msg: ", msg)
-    socket.emit('received-admin', msg)
+
+socket.on('res-client', msg =>{
+    console.log("admin got this msg from client: ", msg)
+    socket.emit('received-client', msg)
+});
 
 
-})
 
 // socket.emit('admin_msg', "Ok client we will discuss");
 const value = process.argv.splice(2)[0];

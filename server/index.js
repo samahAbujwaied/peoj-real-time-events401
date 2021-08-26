@@ -23,8 +23,11 @@ const io = require('socket.io')(4000);
 // keyed queue
 
 //  there will be no ordered preserved
-const msgQueue = {
-    chores : {}
+const msgQueueClient = {
+    data : {}
+}
+const msgQueueAdmin = {
+    data : {}
 }
 
 const discord = io.of('/discord'); //namespace
@@ -35,50 +38,47 @@ discord.on('connection', socket=> {
         console.log("adding a new task ....")
         const id = uuid();
         console.log("id ====> ", id)
-        msgQueue.chores[id] = payload;
-
-        socket.emit('added', payload); // telling the clinet a task was added
-        
-        discord.emit('chore', {id: id, payload: msgQueue.chores[id]});
-        console.log("after add msgQueue ========> ", msgQueue)
+        msgQueueClient.data[id] = payload;
+        socket.emit('added', payload); // telling the clinet a task was added      
+        discord.emit('res-client', {id: id, payload: msgQueueClient.data[id] });
+        console.log("after add msgQueueClient ========> ", msgQueueClient);
     });
 
     socket.on('admin_msg', payload=> {
       console.log("adding a new task ....")
       const id = uuid();
       console.log("id ====> ", id)
-      msgQueue.chores[id] = payload;
-      discord.emit('res-send', {id: id, payload: msgQueue.chores[id]});
-      console.log("after add msgQueue ========> ", msgQueue);
+      msgQueueAdmin.data[id] = payload;
+      discord.emit('admin-data', {id: id, payload: msgQueueAdmin.data[id] });
+      console.log("after add msgQueueAdmin ========> ", msgQueueAdmin);
   });
 
 
     socket.on('get_all', ()=> {
-        console.log("get_all : admin wants to get its msgs ")
-        Object.keys(msgQueue.chores).forEach(id=> {
-            socket.emit('chore', {id: id, payload: msgQueue.chores[id] })
+        console.log("get_all : all messages from client ")
+        Object.keys(msgQueueClient.data).forEach(id=> {
+            socket.emit('res-client', {id: id, payload: msgQueueClient.data[id] });
         });
     });
-
+    
     socket.on('get_all-client', ()=> {
-      console.log("get_all : client wants to get its msgs ")
-      Object.keys(msgQueue.chores).forEach(id=> {
-          socket.emit('res-send', {id: id, payload: msgQueue.chores[id] })
+        console.log("get_all-client : all messages from admin")
+        Object.keys(msgQueueAdmin.data).forEach(id=> {
+            socket.emit('admin-data', {id: id, payload: msgQueueAdmin.data[id] });
       });
-  });
+    });
 
     socket.on('received-client', msg => {
-        console.log("received on queue will remove it ...")
+        console.log("admin received from client messages on queue will remove it ...")
         // he child confirmed receiving , remove from queue
-       
-        delete msgQueue.chores[msg.id];
-        console.log("after delete msgQueue @@@@@@@@@@ ", msgQueue)
+        delete msgQueueClient.data[msg.id];
+        console.log("after delete msgQueueClient @@@@@@@@@@ ", msgQueueClient)
     })
     socket.on('received-admin', msg => {
-      console.log("received on queue will remove it ...")
+      console.log("client received from admin messages on queue will remove it ...")
       // he child confirmed receiving , remove from queue
-      discord.emit('res-client','your message has been recevied');
-      delete msgQueue.chores[msg.id];
-      console.log("after delete msgQueue @@@@@@@@@@ ", msgQueue)
+    //   discord.emit('res-client','your message has been recevied');
+      delete msgQueueAdmin.data[msg.id];
+      console.log("after delete msgQueueAdmin @@@@@@@@@@ ", msgQueueAdmin)
   })
 });
