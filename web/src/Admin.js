@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react"
 import io from "socket.io-client"
 import "./App.css"
 
-function App() {
+function Admin() {
 	const [ state, setState ] = useState({ message: "", name: "" })
 	const [ chat, setChat ] = useState([])
 
@@ -12,8 +12,8 @@ function App() {
 	useEffect(
 		() => {
 			socketRef.current = io.connect("http://localhost:8080")
-			socketRef.current.emit('get_all-client');
-			socketRef.current.on("admin-data", ({ name, message }) => {
+			socketRef.current.emit('get_all')
+			socketRef.current.on("res-client", ({ name, message }) => {
 				setChat([ ...chat, { name, message } ])
 			})
 			return () => socketRef.current.disconnect()
@@ -27,7 +27,7 @@ function App() {
 
 	const onMessageSubmit = (e) => {
 		const { name, message } = state
-		socketRef.current.emit("client_msg", { name, message })
+		socketRef.current.emit("admin_msg", { name, message })
 		e.preventDefault()
 		setState({ message: "", name })
 	}
@@ -69,5 +69,5 @@ function App() {
 	)
 }
 
-export default App
+export default Admin
 
