@@ -12,8 +12,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 'use strict';
+const cors=require('cors');
 const express = require('express')
 const app = express()
+app.use(cors());
 // const http = require('http').createServer(require('express')())
 const uuid = require('uuid').v4
 // keep port in dotenv
@@ -23,6 +25,17 @@ const io = require('socket.io')(4456);
 // keyed queue
 
 //  there will be no ordered preserved
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next()
+});
+
+app.get('/', function(req, res, next) {
+  // Handle the get for this route
+  res.send('hello from back')
+});
+
 const msgQueueClient = {
     data : {}
 }
