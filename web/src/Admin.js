@@ -37,7 +37,7 @@ function Admin() {
 	}
     const acceptbtn=(e)=>{
 		
-	 socketRef.current.emit("accept_msg", ({accept:'accept',gotmsg:chat[1].message}))
+	 socketRef.current.emit("accept_msg", ({accept:'accept',gotmsg:chat[0].message}))
 	 console.log('asmklasmklnsdnjksnljn',chat[0].message);
   
 		console.log('accept');
@@ -45,7 +45,7 @@ function Admin() {
 	}
 	const ignorebtn=(e)=>{
 
-		socketRef.current.emit("ignore_msg", ({ignore:'ignore',gotmsg:chat[1].message}))
+		socketRef.current.emit("ignore_msg", ({ignore:'ignore',gotmsg:chat[0].message}))
 	    console.log('a++++++++++++++++',chat[0].message);
     
 		console.log('ignore');
